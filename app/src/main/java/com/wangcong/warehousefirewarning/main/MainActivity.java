@@ -21,8 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.wangcong.warehousefirewarning.R;
+import com.wangcong.warehousefirewarning.utils.MyDatabaseUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView info_tv;
     private ProgressBar progressBar;
     private Switch linkage_sw;
+    private LineChart chart;
 
     EditText time_et;
 
@@ -86,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         warnCount_tv = (TextView) findViewById(R.id.warnCount);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         linkage_sw = (Switch) findViewById(R.id.linkage_sw);
+        chart = (LineChart) findViewById(R.id.tem_chart);
     }
 
     /**
@@ -108,6 +123,33 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Const.linkage = false;
                 }
+
+                MyDatabaseUtil database = new MyDatabaseUtil(getApplicationContext());
+                final List<DataBean> datas = database.queryData(10);
+                List<Entry> entries = new ArrayList<Entry>();
+                int i = 0;
+                for (DataBean item : datas) {
+                    entries.add(new Entry(i++, item.getTem()));
+                }
+                LineDataSet dataSet = new LineDataSet(entries, "温度"); // add entries to dataset
+                LineData lineData = new LineData(dataSet);
+                final DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                IAxisValueFormatter formatter = new IAxisValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value, AxisBase axis) {
+                        Date date = new Date(Long.valueOf(datas.get((int) value).getTimestamp()));
+                        return sdf.format(date).toString();
+                    }
+                };
+                XAxis xAxis = chart.getXAxis();
+                xAxis.setValueFormatter(formatter);
+                xAxis.enableGridDashedLine(10f, 10f, 0f);
+                chart.getAxisRight().setEnabled(false);
+                chart.getDescription().setEnabled(false);
+                chart.setDragEnabled(false);
+                chart.setScaleEnabled(false);
+                chart.setData(lineData);
+                chart.postInvalidate(); // refresh
             }
         });
 

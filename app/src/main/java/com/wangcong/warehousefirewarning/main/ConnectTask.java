@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.wangcong.warehousefirewarning.R;
 import com.wangcong.warehousefirewarning.utils.FROSmoke;
 import com.wangcong.warehousefirewarning.utils.FROTemHum;
+import com.wangcong.warehousefirewarning.utils.MyDatabaseUtil;
 import com.wangcong.warehousefirewarning.utils.StreamUtil;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 
     private boolean CIRCLE = false;
 
+    private MyDatabaseUtil database;
+
 //    private boolean isDialogShow = false;
 
     public ConnectTask(Context context, TextView tem_tv, TextView hum_tv, TextView smoke_tv, TextView warnCount_tv,
@@ -50,6 +53,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
         this.warnCount_tv = warnCount_tv;
         this.info_tv = info_tv;
         this.progressBar = progressBar;
+        this.database = new MyDatabaseUtil(context);
     }
 
     /**
@@ -68,7 +72,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 
         // 进度条消失
         progressBar.setVisibility(View.GONE);
-        
+
         // 显示数据
         if (Const.tem != null) {
             tem_tv.setText(String.valueOf(Const.tem));
@@ -167,6 +171,12 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                         }
                     }
                 }
+
+                // 保存数据
+                if (tem != null && hum != null && smoke != null) {
+                    database.insertData(tem, hum, smoke);
+                }
+
                 // 更新界面
                 publishProgress();
                 Thread.sleep(200);
