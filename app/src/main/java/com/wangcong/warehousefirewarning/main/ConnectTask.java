@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.wangcong.warehousefirewarning.R;
 import com.wangcong.warehousefirewarning.utils.FROSmoke;
 import com.wangcong.warehousefirewarning.utils.FROTemHum;
 import com.wangcong.warehousefirewarning.utils.MyDatabaseUtil;
@@ -25,7 +25,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     TextView hum_tv;
     TextView smoke_tv;
     TextView warnCount_tv;
-    TextView info_tv;
+    //    TextView info_tv;
     ProgressBar progressBar;
 
     private Float tem;
@@ -45,13 +45,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 //    private boolean isDialogShow = false;
 
     public ConnectTask(Context context, TextView tem_tv, TextView hum_tv, TextView smoke_tv, TextView warnCount_tv,
-                       TextView info_tv, ProgressBar progressBar) {
+                       ProgressBar progressBar) {
         this.context = context;
         this.tem_tv = tem_tv;
         this.hum_tv = hum_tv;
         this.smoke_tv = smoke_tv;
         this.warnCount_tv = warnCount_tv;
-        this.info_tv = info_tv;
+//        this.info_tv = info_tv;
         this.progressBar = progressBar;
         this.database = new MyDatabaseUtil(context);
     }
@@ -63,11 +63,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     protected void onProgressUpdate(Void... values) {
         if (smokeSocket != null && temHumSocket != null && fanSocket != null && buzzerSocket != null) {
             // if (smokeSocket != null ) {
-            info_tv.setTextColor(context.getResources().getColor(R.color.green));
-            info_tv.setText("连接正常！");
+//            info_tv.setTextColor(context.getResources().getColor(R.color.green));
+//            info_tv.setText("连接正常！");
+            Toast.makeText(context, "连接正常！", Toast.LENGTH_SHORT).show();
         } else {
-            info_tv.setTextColor(context.getResources().getColor(R.color.red));
-            info_tv.setText("连接失败！");
+//            info_tv.setTextColor(context.getResources().getColor(R.color.red));
+//            info_tv.setText("连接失败！");
+            Toast.makeText(context, "连接失败！", Toast.LENGTH_SHORT).show();
         }
 
         // 进度条消失
@@ -93,7 +95,8 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onPreExecute() {
-        info_tv.setText("正在连接...");
+//        info_tv.setText("正在连接...");
+        Toast.makeText(context, "连接失败！", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -242,8 +245,9 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onCancelled() {
-        info_tv.setTextColor(context.getResources().getColor(R.color.gray));
-        info_tv.setText("请点击连接！");
+//        info_tv.setTextColor(context.getResources().getColor(R.color.gray));
+//        info_tv.setText("请点击连接！");
+        Toast.makeText(context, "请点击连接！", Toast.LENGTH_SHORT).show();
     }
 
     /**

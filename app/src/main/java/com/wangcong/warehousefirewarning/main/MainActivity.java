@@ -1,11 +1,10 @@
 package com.wangcong.warehousefirewarning.main;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,20 +20,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.wangcong.warehousefirewarning.R;
-import com.wangcong.warehousefirewarning.utils.MyDatabaseUtil;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,11 +34,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView hum_tv;
     private TextView smoke_tv;
     private TextView warnCount_tv;
+    //    private Button connect_tb;
     private ToggleButton connect_tb;
-    private TextView info_tv;
+    //    private TextView info_tv;
     private ProgressBar progressBar;
     private Switch linkage_sw;
     private LineChart chart;
+    private AlertDialog alertDialog;
 
     EditText time_et;
 
@@ -92,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private void bindView() {
         settingBtn = (Button) findViewById(R.id.settingBtn);
         connect_tb = (ToggleButton) findViewById(R.id.connect_tb);
-        info_tv = (TextView) findViewById(R.id.info_tv);
+//        info_tv = (TextView) findViewById(R.id.info_tv);
         smoke_tv = (TextView) findViewById(R.id.smoke_tv);
         tem_tv = (TextView) findViewById(R.id.tem_tv);
         hum_tv = (TextView) findViewById(R.id.hum_tv);
@@ -100,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         warnCount_tv = (TextView) findViewById(R.id.warnCount);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         linkage_sw = (Switch) findViewById(R.id.linkage_sw);
-        chart = (LineChart) findViewById(R.id.tem_chart);
+//        chart = (LineChart) findViewById(R.id.tem_chart);
     }
 
     /**
@@ -124,32 +112,32 @@ public class MainActivity extends AppCompatActivity {
                     Const.linkage = false;
                 }
 
-                MyDatabaseUtil database = new MyDatabaseUtil(getApplicationContext());
-                final List<DataBean> datas = database.queryData(10);
-                List<Entry> entries = new ArrayList<Entry>();
-                int i = 0;
-                for (DataBean item : datas) {
-                    entries.add(new Entry(i++, item.getTem()));
-                }
-                LineDataSet dataSet = new LineDataSet(entries, "温度"); // add entries to dataset
-                LineData lineData = new LineData(dataSet);
-                final DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                IAxisValueFormatter formatter = new IAxisValueFormatter() {
-                    @Override
-                    public String getFormattedValue(float value, AxisBase axis) {
-                        Date date = new Date(Long.valueOf(datas.get((int) value).getTimestamp()));
-                        return sdf.format(date).toString();
-                    }
-                };
-                XAxis xAxis = chart.getXAxis();
-                xAxis.setValueFormatter(formatter);
-                xAxis.enableGridDashedLine(10f, 10f, 0f);
-                chart.getAxisRight().setEnabled(false);
-                chart.getDescription().setEnabled(false);
-                chart.setDragEnabled(false);
-                chart.setScaleEnabled(false);
-                chart.setData(lineData);
-                chart.postInvalidate(); // refresh
+//                MyDatabaseUtil database = new MyDatabaseUtil(getApplicationContext());
+//                final List<DataBean> datas = database.queryData(10);
+//                List<Entry> entries = new ArrayList<Entry>();
+//                int i = 0;
+//                for (DataBean item : datas) {
+//                    entries.add(new Entry(i++, item.getTem()));
+//                }
+//                LineDataSet dataSet = new LineDataSet(entries, "温度"); // add entries to dataset
+//                LineData lineData = new LineData(dataSet);
+//                final DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+//                IAxisValueFormatter formatter = new IAxisValueFormatter() {
+//                    @Override
+//                    public String getFormattedValue(float value, AxisBase axis) {
+//                        Date date = new Date(Long.valueOf(datas.get((int) value).getTimestamp()));
+//                        return sdf.format(date).toString();
+//                    }
+//                };
+//                XAxis xAxis = chart.getXAxis();
+//                xAxis.setValueFormatter(formatter);
+//                xAxis.enableGridDashedLine(10f, 10f, 0f);
+//                chart.getAxisRight().setEnabled(false);
+//                chart.getDescription().setEnabled(false);
+//                chart.setDragEnabled(false);
+//                chart.setScaleEnabled(false);
+//                chart.setData(lineData);
+//                chart.postInvalidate(); // refresh
             }
         });
 
@@ -170,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     // 进度条显示
                     progressBar.setVisibility(View.VISIBLE);
                     // 开启任务
-                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, info_tv, progressBar);
+                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, progressBar);
                     connectTask.setCIRCLE(true);
                     connectTask.execute();
                 } else {
@@ -188,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // 进度条消失
                     progressBar.setVisibility(View.GONE);
-                    info_tv.setText("请点击连接！");
-                    info_tv.setTextColor(context.getResources().getColor(R.color.gray));
+//                    info_tv.setText("请点击连接！");
+//                    info_tv.setTextColor(context.getResources().getColor(R.color.gray));
                 }
             }
         });
@@ -211,27 +199,31 @@ public class MainActivity extends AppCompatActivity {
      * 显示popupWindow悬浮框
      */
     private void showSettingPopwindow() {
-        // 利用layoutInflater获得View
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        View view = inflater.inflate(R.layout.popwindow_setting, null);
-
-        // 下面是两种方法得到宽度和高度 getWindow().getDecorView().getWidth()
-
-        final PopupWindow window = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT, 450);
-
-        // 设置popWindow弹出窗体可点击，这句话必须添加，并且是true
-        window.setFocusable(true);
-
-        // 实例化一个ColorDrawable颜色为半透明0xb00000
-        ColorDrawable dw = new ColorDrawable(0xb00000);
-
-        window.setBackgroundDrawable(dw);
-
-        // 设置popWindow的显示和消失动画
-        window.setAnimationStyle(R.style.mypopwindow_anim_style);
-        // 在底部显示,第一个参数是parent，不是在其中显示，而是通过子控件找到主窗体，随便一个子控件都行
-        window.showAtLocation(MainActivity.this.findViewById(R.id.connect_tb), Gravity.BOTTOM, 0, 0);
+//        // 利用layoutInflater获得View
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//        View view = inflater.inflate(R.layout.popwindow_setting, null);
+//
+//        // 下面是两种方法得到宽度和高度 getWindow().getDecorView().getWidth()
+//
+//        final PopupWindow window = new PopupWindow(view, WindowManager.LayoutParams.MATCH_PARENT, 450);
+//
+//        // 设置popWindow弹出窗体可点击，这句话必须添加，并且是true
+//        window.setFocusable(true);
+//
+//        // 实例化一个ColorDrawable颜色为半透明0xb00000
+//        ColorDrawable dw = new ColorDrawable(0xb00000);
+//
+//        window.setBackgroundDrawable(dw);
+//
+//        // 设置popWindow的显示和消失动画
+//        window.setAnimationStyle(R.style.mypopwindow_anim_style);
+//        // 在底部显示,第一个参数是parent，不是在其中显示，而是通过子控件找到主窗体，随便一个子控件都行
+//        window.showAtLocation(MainActivity.this.findViewById(R.id.connect_tb), Gravity.BOTTOM, 0, 0);
+        alertDialog = new AlertDialog.Builder(MainActivity.this, R.style.NoBackGroundDialog).create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.popwindow_setting, null);
 
         // 获取控件
         time_et = (EditText) view.findViewById(R.id.time_et);
@@ -264,11 +256,12 @@ public class MainActivity extends AppCompatActivity {
         smokeMaxLim_et.setText(String.valueOf(Const.smokeMaxLim));
 
         // 点击事件
+
         // 取消
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                window.dismiss();
+                alertDialog.dismiss();
             }
         });
 
@@ -309,10 +302,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(context, "配置信息不正确,请重输！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                window.dismiss();
+                alertDialog.dismiss();
             }
         });
+        alertDialog.setContentView(view);
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 
     /**

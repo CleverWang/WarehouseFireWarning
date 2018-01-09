@@ -26,4 +26,9 @@
         <!-- 指定消失的动画xml -->
     </style>
 
+    <style name="NoBackGroundDialog" parent="@android:style/Theme.Holo.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:minWidth">300dp</item>
+    </style>
+
 </resources>
