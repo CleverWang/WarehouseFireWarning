@@ -25,6 +25,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="参数设置" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="联动" />
+
+            <Switch
+                android:id="@+id/linkage_sw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 

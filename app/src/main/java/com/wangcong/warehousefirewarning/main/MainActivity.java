@@ -15,6 +15,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView warnCount_tv;
     private ToggleButton connect_tb;
     private TextView info_tv;
+    private ProgressBar progressBar;
+    private Switch linkage_sw;
 
     EditText time_et;
 
@@ -80,19 +84,32 @@ public class MainActivity extends AppCompatActivity {
         hum_tv = (TextView) findViewById(R.id.hum_tv);
         smoke_tv = (TextView) findViewById(R.id.smoke_tv);
         warnCount_tv = (TextView) findViewById(R.id.warnCount);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        linkage_sw = (Switch) findViewById(R.id.linkage_sw);
     }
 
     /**
      * 初始化数据
      */
     private void initData() {
-
+        linkage_sw.setChecked(true);
     }
 
     /**
      * 按钮监听
      */
     private void initEvent() {
+
+        linkage_sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    Const.linkage = true;
+                } else {
+                    Const.linkage = false;
+                }
+            }
+        });
 
         // 参数设置
         settingBtn.setOnClickListener(new OnClickListener() {
@@ -108,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    // 进度条显示
+                    progressBar.setVisibility(View.VISIBLE);
                     // 开启任务
-                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, info_tv);
+                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, info_tv, progressBar);
                     connectTask.setCIRCLE(true);
                     connectTask.execute();
                 } else {
@@ -125,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                         connectTask.cancel(true);
                         connectTask.closeSocket();
                     }
+                    // 进度条消失
+                    progressBar.setVisibility(View.GONE);
                     info_tv.setText("请点击连接！");
                     info_tv.setTextColor(context.getResources().getColor(R.color.gray));
                 }

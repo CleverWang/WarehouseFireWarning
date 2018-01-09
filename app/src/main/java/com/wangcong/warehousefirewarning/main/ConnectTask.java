@@ -3,6 +3,8 @@ package com.wangcong.warehousefirewarning.main;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.wangcong.warehousefirewarning.R;
@@ -23,6 +25,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     TextView smoke_tv;
     TextView warnCount_tv;
     TextView info_tv;
+    ProgressBar progressBar;
 
     private Float tem;
     private Float hum;
@@ -32,19 +35,21 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     private Socket smokeSocket;
     private Socket temHumSocket;
     private Socket fanSocket;
+    private Socket buzzerSocket;
 
     private boolean CIRCLE = false;
 
 //    private boolean isDialogShow = false;
 
     public ConnectTask(Context context, TextView tem_tv, TextView hum_tv, TextView smoke_tv, TextView warnCount_tv,
-                       TextView info_tv) {
+                       TextView info_tv, ProgressBar progressBar) {
         this.context = context;
         this.tem_tv = tem_tv;
         this.hum_tv = hum_tv;
         this.smoke_tv = smoke_tv;
         this.warnCount_tv = warnCount_tv;
         this.info_tv = info_tv;
+        this.progressBar = progressBar;
     }
 
     /**
@@ -52,7 +57,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onProgressUpdate(Void... values) {
-        if (smokeSocket != null && temHumSocket != null && fanSocket != null) {
+        if (smokeSocket != null && temHumSocket != null && fanSocket != null && buzzerSocket != null) {
             // if (smokeSocket != null ) {
             info_tv.setTextColor(context.getResources().getColor(R.color.green));
             info_tv.setText("连接正常！");
@@ -61,6 +66,9 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
             info_tv.setText("连接失败！");
         }
 
+        // 进度条消失
+        progressBar.setVisibility(View.GONE);
+        
         // 显示数据
         if (Const.tem != null) {
             tem_tv.setText(String.valueOf(Const.tem));
@@ -96,12 +104,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
         smokeSocket = getSocket(Const.SMOKE_IP, Const.SMOKE_PORT);
         temHumSocket = getSocket(Const.TEMHUM_IP, Const.TEMHUM_PORT);
         fanSocket = getSocket(Const.FAN_IP, Const.FAN_PORT);
+        buzzerSocket = getSocket(Const.BUZZER_IP, Const.BUZZER_PORT);
         // 循环读取数据
         while (CIRCLE) {
             try {
                 // 如果全部连接成功
                 // if (smokeSocket != null ) {
-                if (smokeSocket != null && temHumSocket != null && fanSocket != null) {
+                if (smokeSocket != null && temHumSocket != null && fanSocket != null && buzzerSocket != null) {
 
                     // 查询温湿度值
                     StreamUtil.writeCommand(temHumSocket.getOutputStream(), Const.TEMHUM_CHK);
@@ -125,7 +134,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                         Const.smoke = (int) (float) smoke;
                     }
 
-                    // 如果联动打开状态并且温度>上限,湿度<下限,烟雾>上限，打开风机
+                    // 如果联动打开状态并且温度>上限,湿度<下限,烟雾>上限,打开风机,蜂鸣器报警1s
                     Log.i(Const.TAG, "Const.linkage=" + Const.linkage);
                     Log.i(Const.TAG, "Const.tem=" + Const.tem);
                     Log.i(Const.TAG, "Const.temMaxLim=" + Const.temMaxLim);
@@ -141,6 +150,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                         if (!Const.isFanOn) {
                             Const.isFanOn = true;
                             StreamUtil.writeCommand(fanSocket.getOutputStream(), Const.FAN_ON);
+                            Thread.sleep(200);
+                        }
+                        // 蜂鸣器
+                        if (!Const.isBuzzerOn) {
+                            StreamUtil.writeCommand(buzzerSocket.getOutputStream(), Const.BUZZER_ON);
+                            Thread.sleep(1000);
+                            StreamUtil.writeCommand(buzzerSocket.getOutputStream(), Const.BUZZER_OFF);
                             Thread.sleep(200);
                         }
                     } else {
@@ -166,6 +182,11 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
             if (fanSocket != null) {
                 Const.isFanOn = false;
                 StreamUtil.writeCommand(fanSocket.getOutputStream(), Const.FAN_OFF);
+                Thread.sleep(200);
+            }
+            if (buzzerSocket != null) {
+                Const.isBuzzerOn = false;
+                StreamUtil.writeCommand(buzzerSocket.getOutputStream(), Const.BUZZER_OFF);
                 Thread.sleep(200);
             }
         } catch (IOException e1) {
@@ -228,6 +249,9 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
             }
             if (fanSocket != null) {
                 fanSocket.close();
+            }
+            if (buzzerSocket != null) {
+                buzzerSocket.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
