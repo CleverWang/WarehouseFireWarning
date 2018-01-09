@@ -1,0 +1,43 @@
+@startuml
+title 仓储的火灾预警系统
+start
+:connectTask.execute();
+note:开启任务
+:mSocket.connect(mSocketAddress, 3000);
+note:socket连接
+while(!isCancle())is(true)
+:StreamUtil.writeCommand(Tout, Const.TEMHUM_CHK);
+note:查询温湿度
+:StreamUtil.writeCommand(sout, Const.SOMKE_CHK);
+note:查询烟雾值
+if(Const.linkage && Const.tem > Const.temMaxLim \n&& Const.hum < Const.humMinLim&& Const.smoke > Const.smokeMaxLim)then (yes) 
+note:温湿度及温度同时达到\n阀值时的逻辑
+:StreamUtil.writeCommand(fout, Const.FAN_ON);
+note:风扇
+endif;
+endwhile(false)
+:publishProgress;
+note:更新界面
+@enduml
+title WIFI人体传感器读取实验流程图
+|MainActivity|
+start
+:MainActivity.onCreate();
+-> 初始化界面和设置事件;
+ :bindView(),initData(),initEvent();
+->点击事件触发;
+:OnCheckedChangeListener.onCheckChange();
+->开启读取数据异步任务;
+:connectTask.execute();
+|#AntiqueWhite|ConnectTask|
+:mSocket.connect(mSocketAddress, 3000);
+note : socket连接
+:StreamUtil.writeCommand(outputStream, cmd);
+note : 发送命令
+:StreamUtil.readData(inputStream);
+note : 读取数据
+:publishProgress();
+note : 通知更新
+|MainActivity|
+:更新界面;
+stop
