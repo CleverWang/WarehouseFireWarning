@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.wangcong.warehousefirewarning.main.DataBean;
+import com.wangcong.warehousefirewarning.beans.DataBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,13 @@ public class MyDatabaseUtil {
         dbHelper = new MyDatabaseHelper(this.context, "firedata.db", null, 1);
     }
 
+    /**
+     * 向data表中插入一条数据，用于实时动态图表展示
+     *
+     * @param tem   温度
+     * @param hum   湿度
+     * @param smoke 烟雾值
+     */
     public void insertData(float tem, float hum, float smoke) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -35,6 +42,13 @@ public class MyDatabaseUtil {
         db.close();
     }
 
+    /**
+     * 向record表中插入一条预警记录，用于预警历史记录查询
+     *
+     * @param tem   温度
+     * @param hum   湿度
+     * @param smoke 烟雾值
+     */
     public void insertRecord(float tem, float hum, float smoke) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -46,11 +60,17 @@ public class MyDatabaseUtil {
         db.close();
     }
 
+    /**
+     * 从data表中取指定条数的最近插入的数据
+     *
+     * @param count 需要取出的数据的条数
+     * @return 取出的数据组成的列表
+     */
     public List<DataBean> queryData(int count) {
         List<DataBean> result = new ArrayList<>();
         // 查询表中所有的数据
 //        Cursor cursor = db.query("data", null, null, null, null, null, null);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = "select * from data order by id desc limit ?";
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(count)});
         if (cursor.moveToFirst()) {
@@ -60,11 +80,11 @@ public class MyDatabaseUtil {
                 float hum = cursor.getFloat(cursor.getColumnIndex("hum"));
                 float smoke = cursor.getFloat(cursor.getColumnIndex("smoke"));
                 String timestamp = cursor.getString(cursor.getColumnIndex("timestamp"));
+                result.add(new DataBean(tem, hum, smoke, timestamp));
                 Log.d("data", "tem" + tem);
                 Log.d("data", "hum " + hum);
                 Log.d("data", "smoke " + smoke);
                 Log.d("data", "timestamp " + timestamp);
-                result.add(new DataBean(tem, hum, smoke, timestamp));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -72,11 +92,16 @@ public class MyDatabaseUtil {
         return result;
     }
 
+    /**
+     * 从record表中取出所有预警历史记录
+     *
+     * @return 所有预警历史记录组成的列表
+     */
     public List<DataBean> queryRecord() {
         List<DataBean> result = new ArrayList<>();
         // 查询表中所有的数据
 //        Cursor cursor = db.query("data", null, null, null, null, null, null);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query("record", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {

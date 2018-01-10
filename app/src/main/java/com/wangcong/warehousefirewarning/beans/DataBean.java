@@ -1,4 +1,4 @@
-package com.wangcong.warehousefirewarning.main;
+package com.wangcong.warehousefirewarning.beans;
 
 /**
  * Created by 13307 on 2018/1/9.
@@ -6,10 +6,10 @@ package com.wangcong.warehousefirewarning.main;
 
 public class DataBean {
 
-    private Float tem;
-    private Float hum;
-    private Float smoke;
-    private String timestamp;
+    private Float tem; // 温度
+    private Float hum; // 湿度
+    private Float smoke; // 烟雾值
+    private String timestamp; // 时间戳
 
     public DataBean() {
     }

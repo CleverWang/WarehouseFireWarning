@@ -1,4 +1,4 @@
-package com.wangcong.warehousefirewarning.main;
+package com.wangcong.warehousefirewarning.activities;
 
 public class Const {
 
@@ -46,5 +46,9 @@ public class Const {
     public static Boolean linkage = true;
     public static Integer warnCount = 0;
 
+    // 图表每次展示的数据个数
+    public static final int data_count = 10;
+
+    // 动态图表是否继续动态显示
     public static boolean do_loop = true;
 }

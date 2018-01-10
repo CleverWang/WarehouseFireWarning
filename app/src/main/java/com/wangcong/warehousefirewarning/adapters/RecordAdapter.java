@@ -1,4 +1,4 @@
-package com.wangcong.warehousefirewarning.main;
+package com.wangcong.warehousefirewarning.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wangcong.warehousefirewarning.R;
+import com.wangcong.warehousefirewarning.beans.DataBean;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,9 @@ import java.util.List;
  * Created by 13307 on 2018/1/10.
  */
 
+/**
+ * 用于展示历史预警信息的列表的适配器
+ */
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
 
     private List<DataBean> recordList;
@@ -48,22 +52,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_data_view, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-//        holder.fruitView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int position = holder.getAdapterPosition();
-//                Fruit fruit = recordList.get(position);
-//                Toast.makeText(v.getContext(), "you clicked view " + fruit.getName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        holder.fruitImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int position = holder.getAdapterPosition();
-//                Fruit fruit = recordList.get(position);
-//                Toast.makeText(v.getContext(), "you clicked image " + fruit.getName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
         return holder;
     }
 

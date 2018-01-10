@@ -11,11 +11,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon1"
+        android:icon="@drawable/firewarning"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".main.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -26,9 +26,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".main.RecordActivity"
+            android:name=".activities.RecordActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".main.ChartsActivity"></activity>
+        <activity android:name=".activities.ChartsActivity"></activity>
     </application>
 
 </manifest>

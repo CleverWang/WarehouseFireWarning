@@ -1,9 +1,10 @@
-package com.wangcong.warehousefirewarning.main;
+package com.wangcong.warehousefirewarning.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     TextView warnCount_tv;
     TextView info_tv;
     ProgressBar progressBar;
-//    LinearLayout bg_color;
+    LinearLayout bg_color;
 
     private Float tem;
     private Float hum;
@@ -43,10 +44,9 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 
     private MyDatabaseUtil database;
 
-//    private boolean isDialogShow = false;
 
     public ConnectTask(Context context, TextView tem_tv, TextView hum_tv, TextView smoke_tv, TextView warnCount_tv, TextView info_tv,
-                       ProgressBar progressBar) {
+                       ProgressBar progressBar, LinearLayout bg_color) {
         this.context = context;
         this.tem_tv = tem_tv;
         this.hum_tv = hum_tv;
@@ -54,7 +54,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
         this.warnCount_tv = warnCount_tv;
         this.info_tv = info_tv;
         this.progressBar = progressBar;
-//        this.bg_color = bg_color;
+        this.bg_color = bg_color;
         this.database = new MyDatabaseUtil(context);
     }
 
@@ -64,14 +64,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onProgressUpdate(Void... values) {
         if (smokeSocket != null && temHumSocket != null && fanSocket != null && buzzerSocket != null) {
-            // if (smokeSocket != null ) {
             info_tv.setTextColor(context.getResources().getColor(R.color.green));
             info_tv.setText("连接正常！");
-//            Toast.makeText(context, "连接正常！", Toast.LENGTH_SHORT).show();
+            bg_color.setBackgroundColor(Color.parseColor("#3cc391"));
         } else {
             info_tv.setTextColor(context.getResources().getColor(R.color.red));
             info_tv.setText("连接失败！");
-//            Toast.makeText(context, "连接失败！", Toast.LENGTH_SHORT).show();
+            bg_color.setBackgroundColor(Color.parseColor("#7a023c"));
         }
 
         // 进度条消失
@@ -98,7 +97,6 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         info_tv.setText("正在连接...");
-//        Toast.makeText(context, "连接失败！", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -118,7 +116,6 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
         while (CIRCLE) {
             try {
                 // 如果全部连接成功
-                // if (smokeSocket != null ) {
                 if (smokeSocket != null && temHumSocket != null && fanSocket != null && buzzerSocket != null) {
 
                     // 查询温湿度值
@@ -153,7 +150,6 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
 //                    Log.i(Const.TAG, "Const.smokeMaxLim=" + Const.smokeMaxLim);
                     if (Const.linkage && Const.tem > Const.temMaxLim && Const.hum < Const.humMinLim
                             && Const.smoke > Const.smokeMaxLim) {
-//                        bg_color.setBackgroundColor(Color.parseColor("#6050b1"));
                         // 预警次数加1
                         Const.warnCount++;
                         // 风扇
@@ -169,13 +165,12 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                             StreamUtil.writeCommand(buzzerSocket.getOutputStream(), Const.BUZZER_OFF);
                             Thread.sleep(200);
                         }
-                        // 保存数据
+                        // 保存预警数据
                         if (tem != null && hum != null && smoke != null) {
 //                            Log.i(Const.TAG, "insert record");
                             database.insertRecord(tem, hum, smoke);
                         }
                     } else {
-
                         if (Const.isFanOn) {
                             Const.isFanOn = false;
                             StreamUtil.writeCommand(fanSocket.getOutputStream(), Const.FAN_OFF);
@@ -184,7 +179,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                     }
                 }
 
-                // 保存数据
+                // 保存每条数据
                 if (tem != null && hum != null && smoke != null) {
                     database.insertData(tem, hum, smoke);
                 }
@@ -240,10 +235,10 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
         }
         // 检查是否连接成功
         if (mSocket.isConnected()) {
-            Log.i(Const.TAG, ip + "连接成功！");
+//            Log.i(Const.TAG, ip + "连接成功！");
             return mSocket;
         } else {
-            Log.i(Const.TAG, ip + "连接失败！");
+//            Log.i(Const.TAG, ip + "连接失败！");
             return null;
         }
     }
@@ -256,13 +251,12 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     protected void onCancelled() {
         info_tv.setTextColor(context.getResources().getColor(R.color.gray));
         info_tv.setText("请点击连接！");
-//        Toast.makeText(context, "请点击连接！", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 关闭socket
      */
-    void closeSocket() {
+    public void closeSocket() {
         try {
             if (smokeSocket != null) {
                 smokeSocket.close();

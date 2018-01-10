@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/search_by_date_Btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/selector_btn"
+        android:gravity="center"
+        android:text="按日期搜索" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
