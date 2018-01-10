@@ -2,7 +2,7 @@ package com.wangcong.warehousefirewarning.main;
 
 public class Const {
 
-    public static String TAG = "CASE";
+    public static String TAG = "FIRE_WARNING";
 
     // 温湿度
     public static String TEMHUM_CHK = "01 03 00 14 00 02 84 0f";
@@ -45,4 +45,6 @@ public class Const {
     public static Integer time = 500;
     public static Boolean linkage = true;
     public static Integer warnCount = 0;
+
+    public static boolean do_loop = true;
 }

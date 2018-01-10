@@ -27,7 +27,8 @@
         </activity>
         <activity
             android:name=".main.RecordActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
+        <activity android:name=".main.ChartsActivity"></activity>
     </application>
 
 </manifest>

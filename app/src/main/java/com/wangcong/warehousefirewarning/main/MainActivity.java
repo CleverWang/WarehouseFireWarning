@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private LineChart chart;
     private AlertDialog alertDialog;
     private Button recordBtn;
+    private Button chartBtn;
 
     EditText time_et;
 
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         bg_color = (LinearLayout) findViewById(R.id.bg_color);
         linkage_sw = (Switch) findViewById(R.id.linkage_sw);
         recordBtn = (Button) findViewById(R.id.show_records);
+        chartBtn = (Button) findViewById(R.id.show_charts);
 //        chart = (LineChart) findViewById(R.id.tem_chart);
     }
 
@@ -115,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        chartBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ChartsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         linkage_sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -124,33 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Const.linkage = false;
                 }
-
-//                MyDatabaseUtil database = new MyDatabaseUtil(getApplicationContext());
-//                final List<DataBean> datas = database.queryData(10);
-//                List<Entry> entries = new ArrayList<Entry>();
-//                int i = 0;
-//                for (DataBean item : datas) {
-//                    entries.add(new Entry(i++, item.getTem()));
-//                }
-//                LineDataSet dataSet = new LineDataSet(entries, "温度"); // add entries to dataset
-//                LineData lineData = new LineData(dataSet);
-//                final DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-//                IAxisValueFormatter formatter = new IAxisValueFormatter() {
-//                    @Override
-//                    public String getFormattedValue(float value, AxisBase axis) {
-//                        Date date = new Date(Long.valueOf(datas.get((int) value).getTimestamp()));
-//                        return sdf.format(date).toString();
-//                    }
-//                };
-//                XAxis xAxis = chart.getXAxis();
-//                xAxis.setValueFormatter(formatter);
-//                xAxis.enableGridDashedLine(10f, 10f, 0f);
-//                chart.getAxisRight().setEnabled(false);
-//                chart.getDescription().setEnabled(false);
-//                chart.setDragEnabled(false);
-//                chart.setScaleEnabled(false);
-//                chart.setData(lineData);
-//                chart.postInvalidate(); // refresh
             }
         });
 
