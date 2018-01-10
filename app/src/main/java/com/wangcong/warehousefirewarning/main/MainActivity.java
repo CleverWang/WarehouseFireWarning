@@ -1,6 +1,7 @@
 package com.wangcong.warehousefirewarning.main;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView warnCount_tv;
     //    private Button connect_tb;
     private ToggleButton connect_tb;
-    //    private TextView info_tv;
+    private TextView info_tv;
     private ProgressBar progressBar;
+    private LinearLayout bg_color;
     private Switch linkage_sw;
     private LineChart chart;
     private AlertDialog alertDialog;
@@ -80,13 +83,14 @@ public class MainActivity extends AppCompatActivity {
     private void bindView() {
         settingBtn = (Button) findViewById(R.id.settingBtn);
         connect_tb = (ToggleButton) findViewById(R.id.connect_tb);
-//        info_tv = (TextView) findViewById(R.id.info_tv);
+        info_tv = (TextView) findViewById(R.id.info_tv);
         smoke_tv = (TextView) findViewById(R.id.smoke_tv);
         tem_tv = (TextView) findViewById(R.id.tem_tv);
         hum_tv = (TextView) findViewById(R.id.hum_tv);
         smoke_tv = (TextView) findViewById(R.id.smoke_tv);
         warnCount_tv = (TextView) findViewById(R.id.warnCount);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        bg_color = (LinearLayout) findViewById(R.id.bg_color);
         linkage_sw = (Switch) findViewById(R.id.linkage_sw);
 //        chart = (LineChart) findViewById(R.id.tem_chart);
     }
@@ -155,13 +159,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    bg_color.setBackgroundColor(Color.parseColor("#3cc391"));
                     // 进度条显示
                     progressBar.setVisibility(View.VISIBLE);
                     // 开启任务
-                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, progressBar);
+                    connectTask = new ConnectTask(context, tem_tv, hum_tv, smoke_tv, warnCount_tv, info_tv, progressBar);
                     connectTask.setCIRCLE(true);
                     connectTask.execute();
                 } else {
+                    bg_color.setBackgroundColor(Color.parseColor("#3d89d5"));
                     // 取消任务
                     if (connectTask != null && connectTask.getStatus() == AsyncTask.Status.RUNNING) {
                         connectTask.setCIRCLE(false);
@@ -176,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // 进度条消失
                     progressBar.setVisibility(View.GONE);
-//                    info_tv.setText("请点击连接！");
-//                    info_tv.setTextColor(context.getResources().getColor(R.color.gray));
+                    info_tv.setText("请点击连接！");
+                    info_tv.setTextColor(context.getResources().getColor(R.color.gray));
                 }
             }
         });

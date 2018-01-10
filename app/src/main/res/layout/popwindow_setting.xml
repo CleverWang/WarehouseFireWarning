@@ -51,17 +51,17 @@
                         android:gravity="center"
                         android:text="ms" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="联动：" />
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:text="联动：" />-->
 
-                    <Switch
-                        android:id="@+id/linkage_sw1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp" />
+                    <!--<Switch-->
+                    <!--android:id="@+id/linkage_sw1"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="10dp" />-->
                 </LinearLayout>
 
 
