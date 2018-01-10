@@ -144,13 +144,13 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                     }
 
                     // 如果联动打开状态并且温度>上限,湿度<下限,烟雾>上限,打开风机,蜂鸣器报警1s
-                    Log.i(Const.TAG, "Const.linkage=" + Const.linkage);
-                    Log.i(Const.TAG, "Const.tem=" + Const.tem);
-                    Log.i(Const.TAG, "Const.temMaxLim=" + Const.temMaxLim);
-                    Log.i(Const.TAG, "Const.hum=" + Const.hum);
-                    Log.i(Const.TAG, "Const.humMinLim=" + Const.humMinLim);
-                    Log.i(Const.TAG, "Const.smoke=" + Const.smoke);
-                    Log.i(Const.TAG, "Const.smokeMaxLim=" + Const.smokeMaxLim);
+//                    Log.i(Const.TAG, "Const.linkage=" + Const.linkage);
+//                    Log.i(Const.TAG, "Const.tem=" + Const.tem);
+//                    Log.i(Const.TAG, "Const.temMaxLim=" + Const.temMaxLim);
+//                    Log.i(Const.TAG, "Const.hum=" + Const.hum);
+//                    Log.i(Const.TAG, "Const.humMinLim=" + Const.humMinLim);
+//                    Log.i(Const.TAG, "Const.smoke=" + Const.smoke);
+//                    Log.i(Const.TAG, "Const.smokeMaxLim=" + Const.smokeMaxLim);
                     if (Const.linkage && Const.tem > Const.temMaxLim && Const.hum < Const.humMinLim
                             && Const.smoke > Const.smokeMaxLim) {
 //                        bg_color.setBackgroundColor(Color.parseColor("#6050b1"));
@@ -168,6 +168,11 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                             Thread.sleep(1000);
                             StreamUtil.writeCommand(buzzerSocket.getOutputStream(), Const.BUZZER_OFF);
                             Thread.sleep(200);
+                        }
+                        // 保存数据
+                        if (tem != null && hum != null && smoke != null) {
+//                            Log.i(Const.TAG, "insert record");
+                            database.insertRecord(tem, hum, smoke);
                         }
                     } else {
 

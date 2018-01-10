@@ -6,7 +6,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    public static final String CREATE_DATA = "create table data ("
+    public static final String CREATE_HISTORY = "create table data ("
+            + "id integer primary key autoincrement, "
+            + "tem real, "
+            + "hum real, "
+            + "smoke real, "
+            + "timestamp char(10))";
+    public static final String CREATE_RECORD = "create table record ("
             + "id integer primary key autoincrement, "
             + "tem real, "
             + "hum real, "
@@ -21,13 +27,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_DATA);
+        db.execSQL(CREATE_HISTORY);
+        db.execSQL(CREATE_RECORD);
         //Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists data");
+        db.execSQL("drop table if exists record");
         onCreate(db);
     }
 }

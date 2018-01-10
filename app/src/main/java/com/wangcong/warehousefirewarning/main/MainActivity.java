@@ -1,6 +1,7 @@
 package com.wangcong.warehousefirewarning.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView hum_tv;
     private TextView smoke_tv;
     private TextView warnCount_tv;
-    //    private Button connect_tb;
     private ToggleButton connect_tb;
     private TextView info_tv;
     private ProgressBar progressBar;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch linkage_sw;
     private LineChart chart;
     private AlertDialog alertDialog;
+    private Button recordBtn;
 
     EditText time_et;
 
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         bg_color = (LinearLayout) findViewById(R.id.bg_color);
         linkage_sw = (Switch) findViewById(R.id.linkage_sw);
+        recordBtn = (Button) findViewById(R.id.show_records);
 //        chart = (LineChart) findViewById(R.id.tem_chart);
     }
 
@@ -106,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
      * 按钮监听
      */
     private void initEvent() {
+        recordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RecordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         linkage_sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
