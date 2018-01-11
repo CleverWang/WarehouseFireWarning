@@ -1,13 +1,8 @@
 package com.wangcong.warehousefirewarning.activities;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -26,32 +21,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ChartsActivity extends AppCompatActivity {
-    private LineChart tem_chart; // 温度图表
-    private LineChart hum_chart; // 湿度图表
-    private LineChart smoke_chart; // 烟雾值图表
+public class StaticChartsActivity extends AppCompatActivity {
+
+    private LineChart tem_static_chart; // 温度图表
+    private LineChart hum_static_chart; // 湿度图表
+    private LineChart smoke_static_chart; // 烟雾值图表
     private MyDatabaseUtil database;
 
-
-    //消息处理
-    private final int UPDATE_MSG = 1;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case UPDATE_MSG:
-                    drawCharts();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_charts);
+        setContentView(R.layout.activity_static_charts);
 
         // 绑定控件
         bindView();
@@ -62,50 +43,25 @@ public class ChartsActivity extends AppCompatActivity {
     }
 
     private void bindView() {
-        tem_chart = (LineChart) findViewById(R.id.tem_chart);
-        hum_chart = (LineChart) findViewById(R.id.hum_chart);
-        smoke_chart = (LineChart) findViewById(R.id.smoke_chart);
+        tem_static_chart = (LineChart) findViewById(R.id.tem_static_chart);
+        hum_static_chart = (LineChart) findViewById(R.id.hum_static_chart);
+        smoke_static_chart = (LineChart) findViewById(R.id.smoke_static_chart);
 
     }
 
     private void initData() {
-        Const.do_loop = true;
         database = new MyDatabaseUtil(this);
     }
 
     private void initEvent() {
-        // 转跳到静态图表按钮
-        Button static_chart_Btn = (Button) findViewById(R.id.static_chart_Btn);
-        static_chart_Btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ChartsActivity.this, StaticChartsActivity.class);
-                startActivity(intent);
-            }
-        });
-        // 启动定时器，每隔一定时间通知图表进行更新
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (Const.do_loop) {
-                    try {
-                        Thread.sleep(Const.time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Message message = new Message();
-                    message.what = UPDATE_MSG;
-                    handler.sendMessage(message);
-                }
-            }
-        }).start();
+        drawCharts();
     }
 
     /**
      * 绘制图表
      */
     private void drawCharts() {
-        final List<DataBean> datas = database.queryData(Const.data_count);
+        final List<DataBean> datas = database.queryData();
         if (datas.size() > 0) {
 
             List<Entry> tem_entries = new ArrayList<Entry>();
@@ -126,9 +82,10 @@ public class ChartsActivity extends AppCompatActivity {
 
             tem_dataSet.setColor(Color.parseColor("#f17c67"));
             tem_dataSet.setValueTextColor(Color.parseColor("#f17c67"));
-            tem_dataSet.setCircleColor(Color.BLACK);
-            tem_dataSet.setCircleRadius(3f);
-            tem_dataSet.setDrawCircleHole(false);
+            tem_dataSet.setDrawCircles(false);
+//            tem_dataSet.setCircleColor(Color.BLACK);
+//            tem_dataSet.setCircleRadius(3f);
+//            tem_dataSet.setDrawCircleHole(false);
             tem_dataSet.setDrawFilled(true);
             tem_dataSet.setFillColor(Color.parseColor("#f17c67"));
             tem_dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
@@ -136,9 +93,10 @@ public class ChartsActivity extends AppCompatActivity {
 
             hum_dataSet.setColor(Color.parseColor("#DB9019"));
             hum_dataSet.setValueTextColor(Color.parseColor("#DB9019"));
-            hum_dataSet.setCircleColor(Color.BLACK);
-            hum_dataSet.setCircleRadius(3f);
-            hum_dataSet.setDrawCircleHole(false);
+            hum_dataSet.setDrawCircles(false);
+//            hum_dataSet.setCircleColor(Color.BLACK);
+//            hum_dataSet.setCircleRadius(3f);
+//            hum_dataSet.setDrawCircleHole(false);
             hum_dataSet.setDrawFilled(true);
             hum_dataSet.setFillColor(Color.parseColor("#DB9019"));
             hum_dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
@@ -146,9 +104,10 @@ public class ChartsActivity extends AppCompatActivity {
 
             smoke_dataSet.setColor(Color.parseColor("#9966CC"));
             smoke_dataSet.setValueTextColor(Color.parseColor("#9966CC"));
-            smoke_dataSet.setCircleColor(Color.BLACK);
-            smoke_dataSet.setCircleRadius(3f);
-            smoke_dataSet.setDrawCircleHole(false);
+            smoke_dataSet.setDrawCircles(false);
+//            smoke_dataSet.setCircleColor(Color.BLACK);
+//            smoke_dataSet.setCircleRadius(3f);
+//            smoke_dataSet.setDrawCircleHole(false);
             smoke_dataSet.setDrawFilled(true);
             smoke_dataSet.setFillColor(Color.parseColor("#9966CC"));
             smoke_dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
@@ -158,7 +117,7 @@ public class ChartsActivity extends AppCompatActivity {
             LineData hum_lineData = new LineData(hum_dataSet);
             LineData smoke_lineData = new LineData(smoke_dataSet);
 
-            final DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            final DateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm:ss");
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
@@ -167,51 +126,44 @@ public class ChartsActivity extends AppCompatActivity {
                 }
             };
 
-            XAxis xAxis = tem_chart.getXAxis();
+            XAxis xAxis = tem_static_chart.getXAxis();
             xAxis.setValueFormatter(formatter);
             xAxis.enableGridDashedLine(10f, 10f, 0f);
-//        YAxis yAxis = tem_chart.getAxisLeft();
+//        YAxis yAxis = tem_static_chart.getAxisLeft();
 //        yAxis.setAxisMinimum(0);
 //        yAxis.setAxisMaximum(30);
-            tem_chart.getAxisRight().setEnabled(false);
-            tem_chart.getDescription().setEnabled(false);
-            tem_chart.setDragEnabled(false);
-            tem_chart.setScaleEnabled(false);
-            tem_chart.setData(tem_lineData);
-            tem_chart.invalidate(); // refresh
+            tem_static_chart.getAxisRight().setEnabled(false);
+            tem_static_chart.getDescription().setEnabled(false);
+//            tem_static_chart.setDragEnabled(false);
+//            tem_static_chart.setScaleEnabled(false);
+            tem_static_chart.setData(tem_lineData);
+            tem_static_chart.invalidate(); // refresh
 
-            xAxis = hum_chart.getXAxis();
+            xAxis = hum_static_chart.getXAxis();
             xAxis.setValueFormatter(formatter);
             xAxis.enableGridDashedLine(10f, 10f, 0f);
-//        yAxis = hum_chart.getAxisLeft();
+//        yAxis = hum_static_chart.getAxisLeft();
 //        yAxis.setAxisMinimum(0);
 //        yAxis.setAxisMaximum(20);
-            hum_chart.getAxisRight().setEnabled(false);
-            hum_chart.getDescription().setEnabled(false);
-            hum_chart.setDragEnabled(false);
-            hum_chart.setScaleEnabled(false);
-            hum_chart.setData(hum_lineData);
-            hum_chart.invalidate(); // refresh
+            hum_static_chart.getAxisRight().setEnabled(false);
+            hum_static_chart.getDescription().setEnabled(false);
+//            hum_static_chart.setDragEnabled(false);
+//            hum_static_chart.setScaleEnabled(false);
+            hum_static_chart.setData(hum_lineData);
+            hum_static_chart.invalidate(); // refresh
 
-            xAxis = smoke_chart.getXAxis();
+            xAxis = smoke_static_chart.getXAxis();
             xAxis.setValueFormatter(formatter);
             xAxis.enableGridDashedLine(10f, 10f, 0f);
-//        yAxis = smoke_chart.getAxisLeft();
+//        yAxis = smoke_static_chart.getAxisLeft();
 //        yAxis.setAxisMinimum(0);
 //        yAxis.setAxisMaximum(20);
-            smoke_chart.getAxisRight().setEnabled(false);
-            smoke_chart.getDescription().setEnabled(false);
-            smoke_chart.setDragEnabled(false);
-            smoke_chart.setScaleEnabled(false);
-            smoke_chart.setData(smoke_lineData);
-            smoke_chart.invalidate(); // refresh
+            smoke_static_chart.getAxisRight().setEnabled(false);
+            smoke_static_chart.getDescription().setEnabled(false);
+//            smoke_static_chart.setDragEnabled(false);
+//            smoke_static_chart.setScaleEnabled(false);
+            smoke_static_chart.setData(smoke_lineData);
+            smoke_static_chart.invalidate(); // refresh
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        // 返回后取消定时器循环
-        Const.do_loop = false;
-        this.finish();
     }
 }

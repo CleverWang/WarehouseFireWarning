@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.wangcong.warehousefirewarning.beans.DataBean;
 
@@ -81,10 +80,40 @@ public class MyDatabaseUtil {
                 float smoke = cursor.getFloat(cursor.getColumnIndex("smoke"));
                 String timestamp = cursor.getString(cursor.getColumnIndex("timestamp"));
                 result.add(new DataBean(tem, hum, smoke, timestamp));
-                Log.d("data", "tem" + tem);
-                Log.d("data", "hum " + hum);
-                Log.d("data", "smoke " + smoke);
-                Log.d("data", "timestamp " + timestamp);
+//                Log.d("data", "tem" + tem);
+//                Log.d("data", "hum " + hum);
+//                Log.d("data", "smoke " + smoke);
+//                Log.d("data", "timestamp " + timestamp);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    /**
+     * 从data表中取所有插入的数据
+     *
+     * @return 取出的数据组成的列表
+     */
+    public List<DataBean> queryData() {
+        List<DataBean> result = new ArrayList<>();
+        // 查询表中所有的数据
+//        Cursor cursor = db.query("data", null, null, null, null, null, null);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query("data", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                // 遍历Cursor对象，取出数据并打印
+                float tem = cursor.getFloat(cursor.getColumnIndex("tem"));
+                float hum = cursor.getFloat(cursor.getColumnIndex("hum"));
+                float smoke = cursor.getFloat(cursor.getColumnIndex("smoke"));
+                String timestamp = cursor.getString(cursor.getColumnIndex("timestamp"));
+                result.add(new DataBean(tem, hum, smoke, timestamp));
+//                Log.d("data", "tem" + tem);
+//                Log.d("data", "hum " + hum);
+//                Log.d("data", "smoke " + smoke);
+//                Log.d("data", "timestamp " + timestamp);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -110,10 +139,10 @@ public class MyDatabaseUtil {
                 float hum = cursor.getFloat(cursor.getColumnIndex("hum"));
                 float smoke = cursor.getFloat(cursor.getColumnIndex("smoke"));
                 String timestamp = cursor.getString(cursor.getColumnIndex("timestamp"));
-                Log.d("record", "tem" + tem);
-                Log.d("record", "hum " + hum);
-                Log.d("record", "smoke " + smoke);
-                Log.d("record", "timestamp " + timestamp);
+//                Log.d("record", "tem" + tem);
+//                Log.d("record", "hum " + hum);
+//                Log.d("record", "smoke " + smoke);
+//                Log.d("record", "timestamp " + timestamp);
                 result.add(new DataBean(tem, hum, smoke, timestamp));
             } while (cursor.moveToNext());
         }

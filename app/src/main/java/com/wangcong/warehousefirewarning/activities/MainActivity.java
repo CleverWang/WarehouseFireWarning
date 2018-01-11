@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
                     connectTask.setCIRCLE(true);
                     connectTask.execute();
                 } else {
-                    bg_color.setBackgroundColor(Color.parseColor("#3d89d5"));
                     // 取消任务
                     if (connectTask != null && connectTask.getStatus() == AsyncTask.Status.RUNNING) {
                         connectTask.setCIRCLE(false);
@@ -176,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // 进度条消失
                     progressBar.setVisibility(View.GONE);
+                    bg_color.setBackgroundColor(Color.parseColor("#3d89d5"));
                     info_tv.setText("请点击连接！");
                     info_tv.setTextColor(context.getResources().getColor(R.color.gray));
                 }

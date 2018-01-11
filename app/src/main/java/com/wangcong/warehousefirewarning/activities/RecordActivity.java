@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,12 +14,12 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.wangcong.warehousefirewarning.R;
-import com.wangcong.warehousefirewarning.beans.DataBean;
 import com.wangcong.warehousefirewarning.adapters.RecordAdapter;
+import com.wangcong.warehousefirewarning.beans.DataBean;
 import com.wangcong.warehousefirewarning.utils.MyDatabaseUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
@@ -120,12 +121,23 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     private void refreshRecordsByDate(int y, int m, int d) {
-        long start_time = (new Date(y, m, d, 0, 0, 0)).getTime();
-        long end_time = (new Date(y, m, d, 23, 59, 59)).getTime();
+//        Log.d(Const.TAG, "refreshRecordsByDate: " + y + " " + m + " " + d);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(y, m - 1, d, 0, 0, 0);
+        long start_time = cal.getTimeInMillis();
+//        Log.d(Const.TAG, "refreshRecordsByDate: " + start_time);
+
+        cal.set(y, m - 1, d, 23, 59, 59);
+        long end_time = cal.getTimeInMillis();
+//        Log.d(Const.TAG, "refreshRecordsByDate: " + end_time);
+
+
         recordList.clear();
         List<DataBean> list = database.queryRecord();
         for (DataBean item : list) {
             long time = Long.parseLong(item.getTimestamp());
+            Log.d(Const.TAG, "refreshRecordsByDate: " + time);
             if (start_time <= time && end_time >= time) {
                 recordList.add(item);
             }

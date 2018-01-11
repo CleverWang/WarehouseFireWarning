@@ -251,6 +251,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     protected void onCancelled() {
         info_tv.setTextColor(context.getResources().getColor(R.color.gray));
         info_tv.setText("请点击连接！");
+        bg_color.setBackgroundColor(Color.parseColor("#3d89d5"));
     }
 
     /**

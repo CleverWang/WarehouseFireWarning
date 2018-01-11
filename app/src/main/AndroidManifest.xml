@@ -28,7 +28,12 @@
         <activity
             android:name=".activities.RecordActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".activities.ChartsActivity"></activity>
+        <activity
+            android:name=".activities.ChartsActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.StaticChartsActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>
