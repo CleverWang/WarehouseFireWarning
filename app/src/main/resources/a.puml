@@ -6,18 +6,28 @@ note:开启任务
 :mSocket.connect(mSocketAddress, 3000);
 note:socket连接
 while(!isCancle())is(true)
-:StreamUtil.writeCommand(Tout, Const.TEMHUM_CHK);
+:StreamUtil.writeCommand(tout, Const.TEMHUM_CHK);
 note:查询温湿度
 :StreamUtil.writeCommand(sout, Const.SOMKE_CHK);
 note:查询烟雾值
 if(Const.linkage && Const.tem > Const.temMaxLim \n&& Const.hum < Const.humMinLim&& Const.smoke > Const.smokeMaxLim)then (yes) 
-note:温湿度及温度同时达到\n阀值时的逻辑
+'note:温湿度及温度同时达到\n阀值时的逻辑
 :StreamUtil.writeCommand(fout, Const.FAN_ON);
-note:风扇
+note:打开风扇
+:StreamUtil.writeCommand(bout, Const.BUZZER_ON);
+note:蜂鸣器鸣1s
+else
+:StreamUtil.writeCommand(fout, Const.FAN_OFF);
+note:关闭风扇
 endif;
-endwhile(false)
 :publishProgress;
 note:更新界面
+end while(false)
+:StreamUtil.writeCommand(fout, Const.FAN_OFF);
+note:关闭风扇
+:StreamUtil.writeCommand(bout, Const.BUZZER_OFF);
+note:关闭蜂鸣器
+end
 @enduml
 title WIFI人体传感器读取实验流程图
 |MainActivity|

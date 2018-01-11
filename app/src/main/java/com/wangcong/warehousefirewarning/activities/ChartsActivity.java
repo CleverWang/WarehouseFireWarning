@@ -83,6 +83,10 @@ public class ChartsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        setTimer();
+    }
+
+    private void setTimer() {
         // 启动定时器，每隔一定时间通知图表进行更新
         new Thread(new Runnable() {
             @Override
